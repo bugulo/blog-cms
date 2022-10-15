@@ -1,0 +1,29 @@
+version: "3.9"
+
+volumes:
+  postgres_data:
+
+services:
+  server:
+    image: blog:latest
+    depends_on:
+      - "database"
+    ports:
+      - "8080:80"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      ConnectionStrings__Database: "host=database;port=5432;database=blog;username=username;password=password"
+
+  database:
+    image: postgres:latest
+    ports:
+      - "5432"
+    restart: always
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: "username"
+      POSTGRES_PASSWORD: "password"
+      POSTGRES_DB: "blog"
